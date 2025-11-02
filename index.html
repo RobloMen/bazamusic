@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAZA MUSIC - Концерты</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #ff5e00, #ffbb00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: #ff5e00;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        
+        nav a:hover, nav a.active {
+            color: #ff5e00;
+            background-color: rgba(255, 94, 0, 0.1);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background: transparent;
+            color: #ff5e00;
+            border: 1px solid #ff5e00;
+        }
+        
+        .btn-login:hover {
+            background: rgba(255, 94, 0, 0.1);
+        }
+        
+        .btn-upload {
+            background: linear-gradient(90deg, #ff5e00, #ffbb00);
+            color: #000;
+        }
+        
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 94, 0, 0.3);
+        }
+        
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400"><rect width="1200" height="400" fill="%231a1a1a"/><text x="50%" y="50%" font-family="Arial" font-size="24" fill="%23ff5e00" text-anchor="middle">BAZA MUSIC Концерты</text></svg>');
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #ff5e00, #ffbb00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: #ddd;
+        }
+        
+        .featured-videos {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ff5e00;
+            display: inline-block;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .video-card {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            background-color: #2d2d2d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .video-card:hover .video-thumbnail img {
+            transform: scale(1.05);
+        }
+        
+        .thumbnail-placeholder {
+            font-size: 3rem;
+            color: #ff5e00;
+        }
+        
+        .video-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .video-info {
+            padding: 1rem;
+        }
+        
+        .video-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .video-views::before {
+            content: "👁️ ";
+        }
+        
+        .video-date::before {
+            content: "📅 ";
+        }
+        
+        .video-player-container {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        .video-player {
+            width: 100%;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .video-player video {
+            width: 100%;
+            max-height: 70vh;
+        }
+        
+        .player-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .control-btn:hover {
+            color: #ff5e00;
+        }
+        
+        .progress-container {
+            flex-grow: 1;
+            margin: 0 1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #333;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff5e00, #ffbb00);
+            width: 0%;
+        }
+        
+        .time-display {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .video-details {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .video-details h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .video-description {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .video-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            color: #aaa;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: #ff5e00;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-btn:hover {
+            background-color: rgba(255, 94, 0, 0.1);
+        }
+        
+        .upload-section {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #ddd;
+        }
+        
+        .form-control {
+            padding: 0.8rem;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #ff5e00;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border: 2px dashed #444;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: #ff5e00;
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            color: #ff5e00;
+            margin-bottom: 1rem;
+        }
+        
+        .file-info {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        footer {
+            background-color: #1a1a1a;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #ff5e00;
+        }
+        
+        .copyright {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .player-controls {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .progress-container {
+                order: 3;
+                flex-basis: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🎵</div>
+                <h1>BAZA MUSIC</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" id="nav-home">Главная</a></li>
+                    <li><a href="#" id="nav-upload">Загрузить концерт</a></li>
+                    <li><a href="#">О группе</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <button class="btn btn-login">Войти</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Главная страница -->
+        <div id="home-page">
+            <section class="hero">
+                <h2>Концерты BAZA MUSIC в высоком качестве</h2>
+                <p>Смотрите полные записи концертов группы BAZA MUSIC в премиальном качестве. Только здесь - эксклюзивные материалы и живые выступления.</p>
+                <button class="btn btn-upload" id="hero-upload-btn">Загрузить концерт</button>
+            </section>
+
+            <section class="featured-videos">
+                <h2 class="section-title">Концерты BAZA MUSIC</h2>
+                <div class="video-grid" id="video-grid">
+                    <!-- Видео будут добавляться динамически -->
+                    <div class="no-videos" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                        <p>Пока нет загруженных концертов. Загрузите первый концерт!</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Страница загрузки -->
+        <div id="upload-page" style="display: none;">
+            <button class="back-btn" id="upload-back-btn">← Назад к концертам</button>
+            
+            <section class="upload-section">
+                <h2 class="section-title">Загрузить новый концерт</h2>
+                
+                <form class="upload-form" id="upload-form">
+                    <div class="form-group">
+                        <label for="video-title">Название концерта</label>
+                        <input type="text" id="video-title" class="form-control" placeholder="Например: BAZA MUSIC Live в Москве 2023" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-description">Описание концерта</label>
+                        <textarea id="video-description" class="form-control" placeholder="Опишите концерт, место проведения, дату и другие детали..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-date">Дата концерта</label>
+                        <input type="date" id="video-date" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-file">Видео файл (4-7 ГБ)</label>
+                        <div class="file-upload" id="file-upload-area">
+                            <div class="file-upload-icon">📁</div>
+                            <p>Перетащите видео файл сюда или нажмите для выбора</p>
+                            <p class="file-info">Поддерживаются файлы MP4, MOV, AVI до 7 ГБ</p>
+                            <input type="file" id="video-file" accept="video/*" style="display: none;">
+                        </div>
+                        <div id="file-info" style="margin-top: 1rem;"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-thumbnail">Обложка концерта (опционально)</label>
+                        <div class="file-upload" id="thumbnail-upload-area">
+                            <div class="file-upload-icon">🖼️</div>
+                            <p>Перетащите изображение обложки или нажмите для выбора</p>
+                            <p class="file-info">Рекомендуемый размер: 1280x720px</p>
+                            <input type="file" id="video-thumbnail" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-upload" style="align-self: flex-start;">Загрузить концерт</button>
+                </form>
+            </section>
+        </div>
+        
+        <!-- Страница просмотра видео -->
+        <div id="video-page" class="video-player-container">
+            <button class="back-btn" id="back-btn">← Назад к концертам</button>
+            
+            <div class="video-player">
+                <video id="main-video" controls>
+                    <!-- Источник видео будет установлен динамически -->
+                    Ваш браузер не поддерживает видео тег.
+                </video>
+            </div>
+            
+            <div class="player-controls">
+                <div class="control-group">
+                    <button class="control-btn" id="play-pause">▶️</button>
+                    <button class="control-btn" id="mute">🔊</button>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <span class="time-display" id="current-time">0:00</span>
+                    <span class="time-display">/</span>
+                    <span class="time-display" id="duration">0:00</span>
+                    <button class="control-btn" id="fullscreen">⛶</button>
+                </div>
+            </div>
+            
+            <div class="video-details">
+                <h2 id="video-page-title">Название концерта</h2>
+                <div class="video-stats">
+                    <span class="video-views" id="video-page-views">0 просмотров</span>
+                    <span class="video-date" id="video-page-date">Дата</span>
+                </div>
+                <p class="video-description" id="video-page-description">
+                    Описание концерта появится здесь.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Главная</a>
+                <a href="#">Концерты</a>
+                <a href="#">О группе</a>
+                <a href="#">Контакты</a>
+                <a href="#">Политика конфиденциальности</a>
+            </div>
+            <p class="copyright">© 2023 BAZA MUSIC. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Данные о концертах (в реальном приложении будут храниться на сервере)
+        let concerts = JSON.parse(localStorage.getItem('bazaMusicConcerts')) || [];
+        
+        // Элементы DOM
+        const homePage = document.getElementById('home-page');
+        const uploadPage = document.getElementById('upload-page');
+        const videoPage = document.getElementById('video-page');
+        const videoGrid = document.getElementById('video-grid');
+        const uploadForm = document.getElementById('upload-form');
+        const fileUploadArea = document.getElementById('file-upload-area');
+        const videoFileInput = document.getElementById('video-file');
+        const thumbnailUploadArea = document.getElementById('thumbnail-upload-area');
+        const thumbnailInput = document.getElementById('video-thumbnail');
+        const fileInfo = document.getElementById('file-info');
+        const mainVideo = document.getElementById('main-video');
+        const backBtn = document.getElementById('back-btn');
+        const uploadBackBtn = document.getElementById('upload-back-btn');
+        const navHome = document.getElementById('nav-home');
+        const navUpload = document.getElementById('nav-upload');
+        const heroUploadBtn = document.getElementById('hero-upload-btn');
+        
+        // Навигация
+        navHome.addEventListener('click', (e) => {
+            e.preventDefault();
+            showHomePage();
+        });
+        
+        navUpload.addEventListener('click', (e) => {
+            e.preventDefault();
+            showUploadPage();
+        });
+        
+        heroUploadBtn.addEventListener('click', () => {
+            showUploadPage();
+        });
+        
+        backBtn.addEventListener('click', () => {
+            showHomePage();
+        });
+        
+        uploadBackBtn.addEventListener('click', () => {
+            showHomePage();
+        });
+        
+        function showHomePage() {
+            homePage.style.display = 'block';
+            uploadPage.style.display = 'none';
+            videoPage.style.display = 'none';
+            navHome.classList.add('active');
+            navUpload.classList.remove('active');
+            renderConcerts();
+        }
+        
+        function showUploadPage() {
+            homePage.style.display = 'none';
+            uploadPage.style.display = 'block';
+            videoPage.style.display = 'none';
+            navHome.classList.remove('active');
+            navUpload.classList.add('active');
+        }
+        
+        function showVideoPage(concertId) {
+            homePage.style.display = 'none';
+            uploadPage.style.display = 'none';
+            videoPage.style.display = 'block';
+            navHome.classList.remove('active');
+            navUpload.classList.remove('active');
+            
+            const concert = concerts.find(c => c.id === concertId);
+            if (concert) {
+                document.getElementById('video-page-title').textContent = concert.title;
+                document.getElementById('video-page-date').textContent = concert.date;
+                document.getElementById('video-page-description').textContent = concert.description;
+                document.getElementById('video-page-views').textContent = `${concert.views} просмотров`;
+                
+                // В реальном приложении здесь будет URL к видео на сервере
+                mainVideo.src = concert.videoUrl || '#';
+                
+                // Увеличиваем счетчик просмотров
+                concert.views++;
+                saveConcerts();
+            }
+        }
+        
+        // Загрузка файлов
+        fileUploadArea.addEventListener('click', () => {
+            videoFileInput.click();
+        });
+        
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = '#ff5e00';
+        });
+        
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.style.borderColor = '#444';
+        });
+        
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = '#444';
+            
+            if (e.dataTransfer.files.length) {
+                videoFileInput.files = e.dataTransfer.files;
+                updateFileInfo();
+            }
+        });
+        
+        videoFileInput.addEventListener('change', updateFileInfo);
+        
+        function updateFileInfo() {
+            if (videoFileInput.files.length) {
+                const file = videoFileInput.files[0];
+                const fileSize = (file.size / (1024 * 1024 * 1024)).toFixed(2);
+                fileInfo.innerHTML = `Выбран файл: <strong>${file.name}</strong> (${fileSize} ГБ)`;
+                
+                // Проверка размера файла
+                if (file.size > 7 * 1024 * 1024 * 1024) {
+                    fileInfo.innerHTML += `<br><span style="color: #ff5e00;">Файл слишком большой! Максимальный размер: 7 ГБ</span>`;
+                }
+            } else {
+                fileInfo.innerHTML = '';
+            }
+        }
+        
+        thumbnailUploadArea.addEventListener('click', () => {
+            thumbnailInput.click();
+        });
+        
+        // Обработка формы загрузки
+        uploadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('video-title').value;
+            const description = document.getElementById('video-description').value;
+            const date = document.getElementById('video-date').value;
+            const videoFile = videoFileInput.files[0];
+            
+            if (!videoFile) {
+                alert('Пожалуйста, выберите видео файл');
+                return;
+            }
+            
+            if (videoFile.size > 7 * 1024 * 1024 * 1024) {
+                alert('Файл слишком большой! Максимальный размер: 7 ГБ');
+                return;
+            }
+            
+            // Создаем объект концерта
+            const newConcert = {
+                id: Date.now().toString(),
+                title,
+                description,
+                date: formatDate(date),
+                videoUrl: URL.createObjectURL(videoFile), // В реальном приложении это будет URL на сервере
+                thumbnailUrl: thumbnailInput.files.length ? URL.createObjectURL(thumbnailInput.files[0]) : null,
+                views: 0,
+                duration: '2:15:43' // В реальном приложении нужно вычислять длительность видео
+            };
+            
+            // Добавляем концерт в массив
+            concerts.unshift(newConcert);
+            saveConcerts();
+            
+            // Очищаем форму
+            uploadForm.reset();
+            fileInfo.innerHTML = '';
+            
+            // Показываем главную страницу
+            showHomePage();
+            
+            alert('Концерт успешно загружен!');
+        });
+        
+        // Сохранение концертов в localStorage
+        function saveConcerts() {
+            localStorage.setItem('bazaMusicConcerts', JSON.stringify(concerts));
+        }
+        
+        // Отображение концертов на главной странице
+        function renderConcerts() {
+            if (concerts.length === 0) {
+                videoGrid.innerHTML = '<div class="no-videos" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;"><p>Пока нет загруженных концертов. Загрузите первый концерт!</p></div>';
+                return;
+            }
+            
+            videoGrid.innerHTML = concerts.map(concert => `
+                <div class="video-card" data-id="${concert.id}">
+                    <div class="video-thumbnail">
+                        ${concert.thumbnailUrl ? 
+                            `<img src="${concert.thumbnailUrl}" alt="${concert.title}">` : 
+                            `<div class="thumbnail-placeholder">🎵</div>`
+                        }
+                        <div class="video-duration">${concert.duration}</div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">${concert.title}</h3>
+                        <div class="video-meta">
+                            <span class="video-views">${concert.views}</span>
+                            <span class="video-date">${concert.date}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Добавляем обработчики событий для карточек концертов
+            document.querySelectorAll('.video-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const concertId = card.getAttribute('data-id');
+                    showVideoPage(concertId);
+                });
+            });
+        }
+        
+        // Форматирование даты
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU');
+        }
+        
+        // Инициализация
+        renderConcerts();
+        
+        // Управление видео
+        const playPauseBtn = document.getElementById('play-pause');
+        const muteBtn = document.getElementById('mute');
+        const progressBar = document.getElementById('progress-bar');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const fullscreenBtn = document.getElementById('fullscreen');
+        
+        playPauseBtn.addEventListener('click', () => {
+            if (mainVideo.paused) {
+                mainVideo.play();
+                playPauseBtn.textContent = '⏸️';
+            } else {
+                mainVideo.pause();
+                playPauseBtn.textContent = '▶️';
+            }
+        });
+        
+        muteBtn.addEventListener('click', () => {
+            mainVideo.muted = !mainVideo.muted;
+            muteBtn.textContent = mainVideo.muted ? '🔇' : '🔊';
+        });
+        
+        mainVideo.addEventListener('timeupdate', () => {
+            const percent = (mainVideo.currentTime / mainVideo.duration) * 100;
+            progress.style.width = `${percent}%`;
+            
+            currentTimeEl.textContent = formatTime(mainVideo.currentTime);
+        });
+        
+        mainVideo.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(mainVideo.duration);
+        });
+        
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            mainVideo.currentTime = percent * mainVideo.duration;
+        });
+        
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                videoPage.requestFullscreen().catch(err => {
+                    console.error(`Ошибка при переходе в полноэкранный режим: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+        
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            
+            if (h > 0) {
+                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            } else {
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            }
+        }
+    </script>
+</body>
+</html>
