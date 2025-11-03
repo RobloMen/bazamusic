@@ -89,6 +89,28 @@
             font-weight: 500;
         }
         
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .sync-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
         .btn {
             padding: 0.6rem 1.2rem;
             border: none;
@@ -533,6 +555,10 @@
                 </ul>
             </nav>
             <div class="user-actions">
+                <div class="sync-status">
+                    <div class="sync-indicator"></div>
+                    <span id="sync-status-text">Синхронизация</span>
+                </div>
                 <div class="user-info">
                     <span>👤 cashzlo (админ)</span>
                 </div>
@@ -696,9 +722,90 @@
         const heroUploadBtn = document.getElementById('hero-upload-btn');
         const deleteVideoBtn = document.getElementById('delete-video-btn');
         const logoutBtn = document.getElementById('logout-btn');
+        const syncStatusText = document.getElementById('sync-status-text');
         
         // Текущий просматриваемый концерт
         let currentConcertId = null;
+        
+        // Синхронизация данных
+        let syncInterval;
+        
+        // Инициализация синхронизации
+        function initSync() {
+            // Запускаем синхронизацию каждую секунду
+            syncInterval = setInterval(syncData, 1000);
+            
+            // Синхронизируем при загрузке страницы
+            syncData();
+            
+            // Синхронизируем при возвращении на вкладку
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    syncData();
+                }
+            });
+            
+            // Синхронизируем при восстановлении страницы
+            window.addEventListener('focus', syncData);
+        }
+        
+        // Функция синхронизации данных
+        function syncData() {
+            try {
+                // В реальном приложении здесь будет запрос к серверу
+                // Для демонстрации используем localStorage как "сервер"
+                
+                // Получаем данные из "сервера" (localStorage)
+                const serverData = JSON.parse(localStorage.getItem('bazaMusicConcertsServer')) || [];
+                
+                // Получаем локальные данные
+                const localData = JSON.parse(localStorage.getItem('bazaMusicConcerts')) || [];
+                
+                // Если на "сервере" есть новые данные, обновляем локальные
+                if (serverData.length > localData.length || 
+                    JSON.stringify(serverData) !== JSON.stringify(localData)) {
+                    
+                    // Обновляем локальные данные
+                    concerts = [...serverData];
+                    localStorage.setItem('bazaMusicConcerts', JSON.stringify(concerts));
+                    
+                    // Обновляем отображение
+                    if (homePage.style.display !== 'none') {
+                        renderConcerts();
+                    }
+                    
+                    // Показываем статус синхронизации
+                    showSyncStatus('Данные обновлены', 'success');
+                } else {
+                    // Если локальные данные новее, обновляем "сервер"
+                    if (localData.length > serverData.length || 
+                        JSON.stringify(localData) !== JSON.stringify(serverData)) {
+                        
+                        localStorage.setItem('bazaMusicConcertsServer', JSON.stringify(localData));
+                        showSyncStatus('Данные синхронизированы', 'success');
+                    } else {
+                        showSyncStatus('Синхронизировано', 'normal');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка синхронизации:', error);
+                showSyncStatus('Ошибка синхронизации', 'error');
+            }
+        }
+        
+        // Показать статус синхронизации
+        function showSyncStatus(message, type) {
+            syncStatusText.textContent = message;
+            
+            const indicator = document.querySelector('.sync-indicator');
+            if (type === 'success') {
+                indicator.style.backgroundColor = '#4CAF50';
+            } else if (type === 'error') {
+                indicator.style.backgroundColor = '#f44336';
+            } else {
+                indicator.style.backgroundColor = '#2196F3';
+            }
+        }
         
         // Навигация
         navHome.addEventListener('click', (e) => {
@@ -781,6 +888,8 @@
                 // Увеличиваем счетчик просмотров
                 concert.views++;
                 saveConcerts();
+                // Синхронизируем изменения
+                syncData();
             }
         }
         
@@ -858,12 +967,16 @@
                 thumbnailUrl: thumbnailInput.files.length ? URL.createObjectURL(thumbnailInput.files[0]) : null,
                 views: 0,
                 duration: '2:15:43', // В реальном приложении нужно вычислять длительность видео
-                uploadedBy: currentUser.username
+                uploadedBy: currentUser.username,
+                lastUpdated: Date.now()
             };
             
             // Добавляем концерт в массив
             concerts.unshift(newConcert);
             saveConcerts();
+            
+            // Синхронизируем изменения
+            syncData();
             
             // Очищаем форму
             uploadForm.reset();
@@ -887,6 +1000,9 @@
                 concerts = concerts.filter(concert => concert.id !== currentConcertId);
                 saveConcerts();
                 
+                // Синхронизируем изменения
+                syncData();
+                
                 // Показываем главную страницу
                 showHomePage();
                 
@@ -897,6 +1013,8 @@
         // Сохранение концертов в localStorage
         function saveConcerts() {
             localStorage.setItem('bazaMusicConcerts', JSON.stringify(concerts));
+            // Также сохраняем на "сервер" для синхронизации
+            localStorage.setItem('bazaMusicConcertsServer', JSON.stringify(concerts));
         }
         
         // Отображение концертов на главной странице
@@ -958,6 +1076,9 @@
                         concerts = concerts.filter(concert => concert.id !== concertId);
                         saveConcerts();
                         
+                        // Синхронизируем изменения
+                        syncData();
+                        
                         // Перерисовываем концерты
                         renderConcerts();
                         
@@ -975,6 +1096,7 @@
         
         // Инициализация
         renderConcerts();
+        initSync();
         
         // Управление видео
         const playPauseBtn = document.getElementById('play-pause');
