@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAZA MUSIC - Концерты</title>
+    <link rel="icon" type="image/x-icon" href="/pixlr.png">
     <style>
         * {
             margin: 0;
@@ -474,6 +475,74 @@
             color: #aaa;
         }
         
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .auth-content {
+            background-color: #1a1a1a;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 0.8rem;
+            text-align: center;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .auth-tab.active {
+            color: #ff5e00;
+            border-bottom: 2px solid #ff5e00;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .auth-form h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        .close-auth {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
         footer {
             background-color: #1a1a1a;
             padding: 2rem;
@@ -559,10 +628,10 @@
                     <div class="sync-indicator"></div>
                     <span id="sync-status-text">Синхронизация</span>
                 </div>
-                <div class="user-info">
-                    <span>👤 cashzlo (админ)</span>
+                <div class="user-info" id="user-info" style="display: none;">
+                    <span id="username-display"></span>
                 </div>
-                <button class="btn btn-login" id="logout-btn">Выйти</button>
+                <button class="btn btn-login" id="auth-btn">Войти</button>
             </div>
         </div>
     </header>
@@ -680,6 +749,47 @@
         </div>
     </main>
 
+    <!-- Модальное окно авторизации -->
+    <div class="auth-modal" id="auth-modal">
+        <div class="auth-content">
+            <button class="close-auth" id="close-auth">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="login-tab">Вход</button>
+                <button class="auth-tab" id="register-tab">Регистрация</button>
+            </div>
+            
+            <form class="auth-form" id="login-form">
+                <h3>Вход в аккаунт</h3>
+                <div class="form-group">
+                    <label for="login-username">Имя пользователя</label>
+                    <input type="text" id="login-username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Пароль</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-upload">Войти</button>
+            </form>
+            
+            <form class="auth-form" id="register-form" style="display: none;">
+                <h3>Регистрация аккаунта</h3>
+                <div class="form-group">
+                    <label for="register-username">Имя пользователя</label>
+                    <input type="text" id="register-username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Пароль</label>
+                    <input type="password" id="register-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm">Подтвердите пароль</label>
+                    <input type="password" id="register-confirm" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-upload">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-content">
             <div class="footer-links">
@@ -697,11 +807,13 @@
         // Данные о концертах (в реальном приложении будут храниться на сервере)
         let concerts = JSON.parse(localStorage.getItem('bazaMusicConcerts')) || [];
         
-        // Текущий пользователь (в реальном приложении будет система аутентификации)
-        const currentUser = {
-            username: 'cashzlo',
-            isAdmin: true
-        };
+        // Данные о пользователях
+        let users = JSON.parse(localStorage.getItem('bazaMusicUsers')) || [
+            { username: 'cashzlo', password: 'admin123', isAdmin: true }
+        ];
+        
+        // Текущий пользователь
+        let currentUser = JSON.parse(localStorage.getItem('bazaMusicCurrentUser')) || null;
         
         // Элементы DOM
         const homePage = document.getElementById('home-page');
@@ -721,7 +833,15 @@
         const navUpload = document.getElementById('nav-upload');
         const heroUploadBtn = document.getElementById('hero-upload-btn');
         const deleteVideoBtn = document.getElementById('delete-video-btn');
-        const logoutBtn = document.getElementById('logout-btn');
+        const authBtn = document.getElementById('auth-btn');
+        const authModal = document.getElementById('auth-modal');
+        const closeAuth = document.getElementById('close-auth');
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const userInfo = document.getElementById('user-info');
+        const usernameDisplay = document.getElementById('username-display');
         const syncStatusText = document.getElementById('sync-status-text');
         
         // Текущий просматриваемый концерт
@@ -729,6 +849,38 @@
         
         // Синхронизация данных
         let syncInterval;
+        
+        // Инициализация при загрузке страницы
+        function init() {
+            updateAuthUI();
+            renderConcerts();
+            initSync();
+            
+            // Проверяем, есть ли сохраненный пользователь
+            if (currentUser) {
+                updateAuthUI();
+            }
+        }
+        
+        // Обновление интерфейса авторизации
+        function updateAuthUI() {
+            if (currentUser) {
+                authBtn.textContent = 'Выйти';
+                userInfo.style.display = 'flex';
+                usernameDisplay.textContent = `👤 ${currentUser.username}${currentUser.isAdmin ? ' (админ)' : ''}`;
+                
+                // Показываем кнопку загрузки только для авторизованных пользователей
+                navUpload.style.display = 'block';
+                heroUploadBtn.style.display = 'block';
+            } else {
+                authBtn.textContent = 'Войти';
+                userInfo.style.display = 'none';
+                
+                // Скрываем кнопку загрузки для неавторизованных пользователей
+                navUpload.style.display = 'none';
+                heroUploadBtn.style.display = 'none';
+            }
+        }
         
         // Инициализация синхронизации
         function initSync() {
@@ -815,11 +967,19 @@
         
         navUpload.addEventListener('click', (e) => {
             e.preventDefault();
-            showUploadPage();
+            if (currentUser) {
+                showUploadPage();
+            } else {
+                showAuthModal();
+            }
         });
         
         heroUploadBtn.addEventListener('click', () => {
-            showUploadPage();
+            if (currentUser) {
+                showUploadPage();
+            } else {
+                showAuthModal();
+            }
         });
         
         backBtn.addEventListener('click', () => {
@@ -830,9 +990,96 @@
             showHomePage();
         });
         
-        logoutBtn.addEventListener('click', () => {
-            // В реальном приложении здесь будет выход из системы
-            alert('Выход из системы (в реальном приложении)');
+        // Авторизация
+        authBtn.addEventListener('click', () => {
+            if (currentUser) {
+                // Выход из системы
+                currentUser = null;
+                localStorage.removeItem('bazaMusicCurrentUser');
+                updateAuthUI();
+                showHomePage();
+            } else {
+                showAuthModal();
+            }
+        });
+        
+        function showAuthModal() {
+            authModal.style.display = 'flex';
+        }
+        
+        function hideAuthModal() {
+            authModal.style.display = 'none';
+        }
+        
+        closeAuth.addEventListener('click', hideAuthModal);
+        
+        // Переключение между вкладками входа и регистрации
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.style.display = 'flex';
+            registerForm.style.display = 'none';
+        });
+        
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.style.display = 'flex';
+            loginForm.style.display = 'none';
+        });
+        
+        // Обработка формы входа
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('bazaMusicCurrentUser', JSON.stringify(currentUser));
+                updateAuthUI();
+                hideAuthModal();
+                alert(`Добро пожаловать, ${username}!`);
+            } else {
+                alert('Неверное имя пользователя или пароль');
+            }
+        });
+        
+        // Обработка формы регистрации
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (password !== confirm) {
+                alert('Пароли не совпадают');
+                return;
+            }
+            
+            if (users.find(u => u.username === username)) {
+                alert('Пользователь с таким именем уже существует');
+                return;
+            }
+            
+            const newUser = {
+                username,
+                password,
+                isAdmin: false
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('bazaMusicUsers', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('bazaMusicCurrentUser', JSON.stringify(currentUser));
+            updateAuthUI();
+            hideAuthModal();
+            alert(`Аккаунт ${username} успешно создан!`);
         });
         
         function showHomePage() {
@@ -845,6 +1092,11 @@
         }
         
         function showUploadPage() {
+            if (!currentUser) {
+                showAuthModal();
+                return;
+            }
+            
             homePage.style.display = 'none';
             uploadPage.style.display = 'block';
             videoPage.style.display = 'none';
@@ -869,15 +1121,15 @@
                 document.getElementById('video-page-views').textContent = `${concert.views} просмотров`;
                 
                 // Показываем кнопку удаления только для админа
-                if (currentUser.isAdmin) {
+                if (currentUser && currentUser.isAdmin) {
                     document.getElementById('video-admin-controls').style.display = 'block';
                 } else {
                     document.getElementById('video-admin-controls').style.display = 'none';
                 }
                 
                 // В реальном приложении здесь будет URL к видео на сервере
-                if (concert.videoUrl && concert.videoUrl.startsWith('blob:')) {
-                    // Если это blob URL, используем его
+                if (concert.videoUrl) {
+                    // Используем сохраненный URL
                     mainVideo.src = concert.videoUrl;
                 } else {
                     // Иначе создаем placeholder
@@ -942,6 +1194,11 @@
         uploadForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
+            if (!currentUser) {
+                alert('Для загрузки концерта необходимо войти в систему');
+                return;
+            }
+            
             const title = document.getElementById('video-title').value;
             const description = document.getElementById('video-description').value;
             const date = document.getElementById('video-date').value;
@@ -957,40 +1214,49 @@
                 return;
             }
             
-            // Создаем объект концерта
-            const newConcert = {
-                id: Date.now().toString(),
-                title,
-                description,
-                date: formatDate(date),
-                videoUrl: URL.createObjectURL(videoFile), // В реальном приложении это будет URL на сервере
-                thumbnailUrl: thumbnailInput.files.length ? URL.createObjectURL(thumbnailInput.files[0]) : null,
-                views: 0,
-                duration: '2:15:43', // В реальном приложении нужно вычислять длительность видео
-                uploadedBy: currentUser.username,
-                lastUpdated: Date.now()
-            };
+            // Создаем временный URL для видео и вычисляем длительность
+            const videoUrl = URL.createObjectURL(videoFile);
+            const tempVideo = document.createElement('video');
             
-            // Добавляем концерт в массив
-            concerts.unshift(newConcert);
-            saveConcerts();
-            
-            // Синхронизируем изменения
-            syncData();
-            
-            // Очищаем форму
-            uploadForm.reset();
-            fileInfo.innerHTML = '';
-            
-            // Показываем главную страницу
-            showHomePage();
-            
-            alert('Концерт успешно загружен!');
+            tempVideo.src = videoUrl;
+            tempVideo.addEventListener('loadedmetadata', () => {
+                const duration = formatTime(tempVideo.duration);
+                
+                // Создаем объект концерта
+                const newConcert = {
+                    id: Date.now().toString(),
+                    title,
+                    description,
+                    date: formatDate(date),
+                    videoUrl: videoUrl,
+                    thumbnailUrl: thumbnailInput.files.length ? URL.createObjectURL(thumbnailInput.files[0]) : null,
+                    views: 0,
+                    duration: duration,
+                    uploadedBy: currentUser.username,
+                    lastUpdated: Date.now()
+                };
+                
+                // Добавляем концерт в массив
+                concerts.unshift(newConcert);
+                saveConcerts();
+                
+                // Синхронизируем изменения
+                syncData();
+                
+                // Очищаем форму
+                uploadForm.reset();
+                fileInfo.innerHTML = '';
+                
+                // Показываем главную страницу
+                showHomePage();
+                
+                alert('Концерт успешно загружен!');
+            });
         });
         
         // Удаление концерта
         deleteVideoBtn.addEventListener('click', () => {
-            if (!currentUser.isAdmin) {
+            if (!currentUser || !currentUser.isAdmin) {
                 alert('У вас нет прав для удаления концертов');
                 return;
             }
@@ -1026,7 +1292,7 @@
             
             videoGrid.innerHTML = concerts.map(concert => `
                 <div class="video-card" data-id="${concert.id}">
-                    ${currentUser.isAdmin ? `
+                    ${currentUser && currentUser.isAdmin ? `
                         <div class="admin-controls">
                             <button class="btn btn-delete delete-concert-btn" data-id="${concert.id}">×</button>
                         </div>
@@ -1065,7 +1331,7 @@
             // Добавляем обработчики для кнопок удаления
             document.querySelectorAll('.delete-concert-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    if (!currentUser.isAdmin) {
+                    if (!currentUser || !currentUser.isAdmin) {
                         alert('У вас нет прав для удаления концертов');
                         return;
                     }
@@ -1094,9 +1360,21 @@
             return date.toLocaleDateString('ru-RU');
         }
         
+        // Форматирование времени
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            
+            if (h > 0) {
+                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            } else {
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            }
+        }
+        
         // Инициализация
-        renderConcerts();
-        initSync();
+        init();
         
         // Управление видео
         const playPauseBtn = document.getElementById('play-pause');
@@ -1148,18 +1426,6 @@
                 document.exitFullscreen();
             }
         });
-        
-        function formatTime(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = Math.floor(seconds % 60);
-            
-            if (h > 0) {
-                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-            } else {
-                return `${m}:${s.toString().padStart(2, '0')}`;
-            }
-        }
     </script>
 </body>
 </html>
