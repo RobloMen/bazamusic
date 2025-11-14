@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAZA MUSIC - Концерты</title>
-    <link rel="icon" type="image/x-icon" href="pixlr.png">
+    <link rel="icon" type="image/x-icon" href="assets/pixlr.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -54,8 +55,15 @@
         }
         
         .logo-icon {
-            font-size: 2rem;
-            color: #ff5e00;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff5e00, #ffbb00);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
         
         nav ul {
@@ -71,7 +79,6 @@
             transition: all 0.3s;
             padding: 0.5rem 1rem;
             border-radius: 6px;
-            position: relative;
         }
         
         nav a:hover {
@@ -265,6 +272,12 @@
             justify-content: center;
         }
         
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
         .video-thumbnail::before {
             content: '';
             position: absolute;
@@ -282,7 +295,7 @@
         }
         
         .thumbnail-placeholder {
-            font-size: 4rem;
+            font-size: 3rem;
             color: #ff5e00;
             opacity: 0.7;
         }
@@ -318,14 +331,6 @@
             margin-bottom: 0.5rem;
         }
         
-        .video-views::before {
-            content: "👁️ ";
-        }
-        
-        .video-date::before {
-            content: "📅 ";
-        }
-        
         .video-file-info {
             color: #666;
             font-size: 0.8rem;
@@ -358,31 +363,12 @@
             overflow: hidden;
             margin-bottom: 2rem;
             border: 1px solid #333;
-            position: relative;
         }
         
         .video-player video {
             width: 100%;
             max-height: 70vh;
             display: block;
-        }
-        
-        .video-placeholder {
-            width: 100%;
-            height: 400px;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            color: #666;
-            border-radius: 12px;
-        }
-        
-        .video-placeholder-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: #ff5e00;
         }
         
         .player-controls {
@@ -393,6 +379,7 @@
             background: #1a1a1a;
             border-radius: 12px;
             border: 1px solid #333;
+            margin-bottom: 2rem;
         }
         
         .control-group {
@@ -429,7 +416,6 @@
             border-radius: 3px;
             overflow: hidden;
             cursor: pointer;
-            position: relative;
         }
         
         .progress {
@@ -749,32 +735,62 @@
             font-size: 1.2rem;
             margin-bottom: 1rem;
         }
+        
+        .server-status {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 4px solid #66BB6A;
+        }
+        
+        .server-status.offline {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            border-left-color: #ef5350;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff33;
+            border-radius: 50%;
+            border-top-color: #ff5e00;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="header-content">
             <div class="logo">
-                <div class="logo-icon">🎵</div>
+                <div class="logo-icon">BM</div>
                 <h1>BAZA MUSIC</h1>
             </div>
             <nav>
                 <ul>
-                    <li><a href="#" class="active" id="nav-home">Главная</a></li>
-                    <li><a href="#" id="nav-upload">Загрузить концерт</a></li>
-                    <li><a href="#">О группе</a></li>
-                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#" class="active" id="nav-home"><i class="fas fa-home"></i> Главная</a></li>
+                    <li><a href="#" id="nav-upload"><i class="fas fa-upload"></i> Загрузить концерт</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> О группе</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> Контакты</a></li>
                 </ul>
             </nav>
             <div class="user-actions">
                 <div class="sync-status">
                     <div class="sync-indicator"></div>
-                    <span id="sync-status-text">Синхронизировано</span>
+                    <span id="sync-status-text"><i class="fas fa-sync-alt"></i> Онлайн</span>
                 </div>
                 <div class="user-info" id="user-info" style="display: none;">
+                    <i class="fas fa-user"></i>
                     <span id="username-display"></span>
                 </div>
-                <button class="btn btn-login" id="auth-btn">Войти</button>
+                <button class="btn btn-login" id="auth-btn"><i class="fas fa-sign-in-alt"></i> Войти</button>
             </div>
         </div>
     </header>
@@ -782,89 +798,91 @@
     <main>
         <!-- Главная страница -->
         <div id="home-page">
+            <div class="server-status" id="server-status">
+                <i class="fas fa-server"></i> Сервер подключен
+            </div>
+
             <section class="hero">
                 <h2>Концерты BAZA MUSIC в высоком качестве</h2>
-                <p>Смотрите полные записи концертов группы BAZA MUSIC в премиальном качестве. Только здесь - эксклюзивные материалы и живые выступления.</p>
-                <button class="btn btn-upload" id="hero-upload-btn">Загрузить концерт</button>
+                <p>Смотрите полные записи концертов группы BAZA MUSIC в премиальном качестве. Все видео загружаются на сервер и доступны для просмотра.</p>
+                <button class="btn btn-upload" id="hero-upload-btn"><i class="fas fa-upload"></i> Загрузить концерт</button>
             </section>
 
             <section class="featured-videos">
                 <h2 class="section-title">Концерты BAZA MUSIC</h2>
                 <div class="video-grid" id="video-grid">
-                    <!-- Видео будут добавляться динамически -->
+                    <div class="no-videos">
+                        <p><i class="fas fa-spinner fa-spin"></i> Загрузка концертов...</p>
+                    </div>
                 </div>
             </section>
         </div>
         
         <!-- Страница загрузки -->
         <div id="upload-page" style="display: none;">
-            <button class="back-btn" id="upload-back-btn">← Назад к концертам</button>
+            <button class="back-btn" id="upload-back-btn"><i class="fas fa-arrow-left"></i> Назад к концертам</button>
             
             <section class="upload-section">
                 <h2 class="section-title">Загрузить новый концерт</h2>
                 
                 <form class="upload-form" id="upload-form">
                     <div class="form-group">
-                        <label for="video-title">Название концерта</label>
+                        <label for="video-title"><i class="fas fa-heading"></i> Название концерта</label>
                         <input type="text" id="video-title" class="form-control" placeholder="Например: BAZA MUSIC Live в Москве 2023" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-description">Описание концерта</label>
+                        <label for="video-description"><i class="fas fa-align-left"></i> Описание концерта</label>
                         <textarea id="video-description" class="form-control" placeholder="Опишите концерт, место проведения, дату и другие детали..." required></textarea>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-date">Дата концерта</label>
+                        <label for="video-date"><i class="fas fa-calendar-alt"></i> Дата концерта</label>
                         <input type="date" id="video-date" class="form-control" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-file">Видео файл (4-7 ГБ)</label>
+                        <label for="video-file"><i class="fas fa-video"></i> Видео файл (MP4, до 7 ГБ)</label>
                         <div class="file-upload" id="file-upload-area">
-                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-icon"><i class="fas fa-file-video"></i></div>
                             <p>Перетащите видео файл сюда или нажмите для выбора</p>
-                            <p class="file-info">Поддерживаются файлы MP4, MOV, AVI до 7 ГБ</p>
-                            <input type="file" id="video-file" accept="video/*" style="display: none;">
+                            <p class="file-info">Поддерживаются файлы MP4 до 7 ГБ</p>
+                            <input type="file" id="video-file" accept="video/mp4" style="display: none;">
                         </div>
                         <div id="file-info" style="margin-top: 1rem;"></div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-thumbnail">Обложка концерта (опционально)</label>
+                        <label for="video-thumbnail"><i class="fas fa-image"></i> Обложка концерта (опционально)</label>
                         <div class="file-upload" id="thumbnail-upload-area">
-                            <div class="file-upload-icon">🖼️</div>
+                            <div class="file-upload-icon"><i class="fas fa-file-image"></i></div>
                             <p>Перетащите изображение обложки или нажмите для выбора</p>
                             <p class="file-info">Рекомендуемый размер: 1280x720px</p>
                             <input type="file" id="video-thumbnail" accept="image/*" style="display: none;">
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-upload" style="align-self: flex-start;">Загрузить концерт</button>
+                    <button type="submit" class="btn btn-upload" style="align-self: flex-start;">
+                        <i class="fas fa-upload"></i> Загрузить на сервер
+                    </button>
                 </form>
             </section>
         </div>
         
         <!-- Страница просмотра видео -->
         <div id="video-page" class="video-player-container">
-            <button class="back-btn" id="back-btn">← Назад к концертам</button>
+            <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i> Назад к концертам</button>
             
             <div class="video-player">
-                <div class="video-placeholder" id="video-placeholder">
-                    <div class="video-placeholder-icon">🎵</div>
-                    <h3>Демо-режим</h3>
-                    <p>В демо-версии видеофайлы не сохраняются после перезагрузки страницы</p>
-                    <p style="margin-top: 1rem; color: #ff5e00;">Информация о концерте сохранена!</p>
-                </div>
-                <video id="main-video" controls style="display: none;">
+                <video id="main-video" controls>
                     Ваш браузер не поддерживает видео тег.
                 </video>
             </div>
             
-            <div class="player-controls" style="display: none;" id="player-controls">
+            <div class="player-controls">
                 <div class="control-group">
-                    <button class="control-btn" id="play-pause">▶️</button>
-                    <button class="control-btn" id="mute">🔊</button>
+                    <button class="control-btn" id="play-pause"><i class="fas fa-play"></i></button>
+                    <button class="control-btn" id="mute"><i class="fas fa-volume-up"></i></button>
                 </div>
                 
                 <div class="progress-container">
@@ -877,21 +895,23 @@
                     <span class="time-display" id="current-time">0:00</span>
                     <span class="time-display">/</span>
                     <span class="time-display" id="duration">0:00</span>
-                    <button class="control-btn" id="fullscreen">⛶</button>
+                    <button class="control-btn" id="fullscreen"><i class="fas fa-expand"></i></button>
                 </div>
             </div>
             
             <div class="video-details">
                 <h2 id="video-page-title">Название концерта</h2>
                 <div class="video-stats">
-                    <span class="video-views" id="video-page-views">0 просмотров</span>
-                    <span class="video-date" id="video-page-date">Дата</span>
+                    <span class="video-views" id="video-page-views"><i class="fas fa-eye"></i> 0 просмотров</span>
+                    <span class="video-date" id="video-page-date"><i class="fas fa-calendar"></i> Дата</span>
                 </div>
                 <p class="video-description" id="video-page-description">
                     Описание концерта появится здесь.
                 </p>
                 <div class="admin-controls" id="video-admin-controls">
-                    <button class="btn btn-delete" id="delete-video-btn">Удалить концерт</button>
+                    <button class="btn btn-delete" id="delete-video-btn">
+                        <i class="fas fa-trash"></i> Удалить концерт
+                    </button>
                 </div>
             </div>
         </div>
@@ -902,38 +922,20 @@
         <div class="auth-content">
             <button class="close-auth" id="close-auth">&times;</button>
             <div class="auth-tabs">
-                <button class="auth-tab active" id="login-tab">Вход</button>
-                <button class="auth-tab" id="register-tab">Регистрация</button>
+                <button class="auth-tab active" id="login-tab"><i class="fas fa-sign-in-alt"></i> Вход</button>
             </div>
             
             <form class="auth-form" id="login-form">
-                <h3>Вход в аккаунт</h3>
+                <h3>Вход для администратора</h3>
                 <div class="form-group">
-                    <label for="login-username">Имя пользователя</label>
+                    <label for="login-username"><i class="fas fa-user"></i> Логин</label>
                     <input type="text" id="login-username" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="login-password">Пароль</label>
+                    <label for="login-password"><i class="fas fa-lock"></i> Пароль</label>
                     <input type="password" id="login-password" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-upload">Войти</button>
-            </form>
-            
-            <form class="auth-form" id="register-form" style="display: none;">
-                <h3>Регистрация аккаунта</h3>
-                <div class="form-group">
-                    <label for="register-username">Имя пользователя</label>
-                    <input type="text" id="register-username" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Пароль</label>
-                    <input type="password" id="register-password" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-confirm">Подтвердите пароль</label>
-                    <input type="password" id="register-confirm" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-upload">Зарегистрироваться</button>
+                <button type="submit" class="btn btn-upload"><i class="fas fa-sign-in-alt"></i> Войти</button>
             </form>
         </div>
     </div>
@@ -941,30 +943,25 @@
     <footer>
         <div class="footer-content">
             <div class="footer-links">
-                <a href="#">Главная</a>
-                <a href="#">Концерты</a>
-                <a href="#">О группе</a>
-                <a href="#">Контакты</a>
-                <a href="#">Политика конфиденциальности</a>
+                <a href="#"><i class="fas fa-home"></i> Главная</a>
+                <a href="#"><i class="fas fa-video"></i> Концерты</a>
+                <a href="#"><i class="fas fa-users"></i> О группе</a>
+                <a href="#"><i class="fas fa-envelope"></i> Контакты</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Политика конфиденциальности</a>
             </div>
-            <p class="copyright">© 2023 BAZA MUSIC. Все права защищены.</p>
+            <p class="copyright">© 2024 BAZA MUSIC. Все права защищены.</p>
         </div>
     </footer>
 
     <script>
-        // Данные о концертах
-        let concerts = JSON.parse(localStorage.getItem('bazaMusicConcerts')) || [];
+        // Конфигурация
+        const API_BASE = 'http://localhost:5000'; // Замени на URL своего сервера
         
-        // Данные о пользователях
-        let users = JSON.parse(localStorage.getItem('bazaMusicUsers')) || [
-            { username: 'cashzlo', password: 'admin123', isAdmin: true },
-            { username: 'admin', password: 'admin', isAdmin: true },
-            { username: 'user', password: 'user', isAdmin: false }
-        ];
-        
-        // Текущий пользователь
-        let currentUser = JSON.parse(localStorage.getItem('bazaMusicCurrentUser')) || null;
-        
+        // Состояние приложения
+        let currentUser = null;
+        let concerts = [];
+        let currentConcertId = null;
+
         // Элементы DOM
         const homePage = document.getElementById('home-page');
         const uploadPage = document.getElementById('upload-page');
@@ -973,10 +970,10 @@
         const uploadForm = document.getElementById('upload-form');
         const fileUploadArea = document.getElementById('file-upload-area');
         const videoFileInput = document.getElementById('video-file');
+        const thumbnailUploadArea = document.getElementById('thumbnail-upload-area');
+        const thumbnailInput = document.getElementById('video-thumbnail');
         const fileInfo = document.getElementById('file-info');
         const mainVideo = document.getElementById('main-video');
-        const videoPlaceholder = document.getElementById('video-placeholder');
-        const playerControls = document.getElementById('player-controls');
         const backBtn = document.getElementById('back-btn');
         const uploadBackBtn = document.getElementById('upload-back-btn');
         const navHome = document.getElementById('nav-home');
@@ -987,240 +984,293 @@
         const authModal = document.getElementById('auth-modal');
         const closeAuth = document.getElementById('close-auth');
         const loginTab = document.getElementById('login-tab');
-        const registerTab = document.getElementById('register-tab');
         const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
         const userInfo = document.getElementById('user-info');
         const usernameDisplay = document.getElementById('username-display');
         const syncStatusText = document.getElementById('sync-status-text');
-        
-        // Текущий просматриваемый концерт
-        let currentConcertId = null;
-        
-        // Инициализация при загрузке страницы
-        function init() {
-            updateAuthUI();
-            renderConcerts();
+        const serverStatus = document.getElementById('server-status');
+
+        // Проверка подключения к серверу
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/api/concerts`);
+                if (response.ok) {
+                    serverStatus.innerHTML = '<i class="fas fa-server"></i> Сервер подключен';
+                    serverStatus.className = 'server-status';
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch (error) {
+                serverStatus.innerHTML = '<i class="fas fa-server"></i> Сервер недоступен';
+                serverStatus.className = 'server-status offline';
+            }
+        }
+
+        // Загрузка концертов с сервера
+        async function loadConcerts() {
+            try {
+                const response = await fetch(`${API_BASE}/api/concerts`);
+                if (!response.ok) throw new Error('Server error');
+                
+                concerts = await response.json();
+                renderConcerts();
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                videoGrid.innerHTML = `
+                    <div class="no-videos">
+                        <p><i class="fas fa-exclamation-triangle"></i> Ошибка загрузки концертов</p>
+                        <p>Проверьте подключение к серверу</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Рендер концертов
+        function renderConcerts() {
+            if (concerts.length === 0) {
+                videoGrid.innerHTML = `
+                    <div class="no-videos">
+                        <p><i class="fas fa-video-slash"></i> Пока нет загруженных концертов</p>
+                        <p>Будьте первым, кто загрузит концерт BAZA MUSIC!</p>
+                        ${!currentUser ? '<p style="margin-top: 1rem; color: #ff5e00;"><i class="fas fa-info-circle"></i> Для загрузки необходимо войти в систему</p>' : ''}
+                    </div>
+                `;
+                return;
+            }
+
+            videoGrid.innerHTML = concerts.map(concert => `
+                <div class="video-card" data-id="${concert.id}">
+                    ${currentUser ? `
+                        <div class="admin-controls">
+                            <button class="btn btn-delete delete-concert-btn" data-id="${concert.id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                    <div class="video-thumbnail">
+                        ${concert.thumbnail_file ? 
+                            `<img src="${API_BASE}/thumbnail/${concert.thumbnail_file}" alt="${concert.title}" onerror="this.style.display='none'">` :
+                            `<div class="thumbnail-placeholder"><i class="fas fa-play-circle"></i></div>`
+                        }
+                        <div class="video-duration">${concert.duration || '2:15:43'}</div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">${concert.title}</h3>
+                        <div class="video-meta">
+                            <span class="video-views"><i class="fas fa-eye"></i> ${concert.views}</span>
+                            <span class="video-date"><i class="fas fa-calendar"></i> ${concert.date}</span>
+                        </div>
+                        <div class="video-file-info">
+                            <i class="fas fa-hdd"></i> ${concert.file_size} • <i class="fas fa-user"></i> ${concert.uploaded_by || 'Админ'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Обработчики событий для карточек
+            document.querySelectorAll('.video-card').forEach(card => {
+                card.addEventListener('click', async (e) => {
+                    if (e.target.closest('.delete-concert-btn')) return;
+                    
+                    const concertId = card.getAttribute('data-id');
+                    await showVideoPage(concertId);
+                });
+            });
+
+            // Обработчики для кнопок удаления
+            document.querySelectorAll('.delete-concert-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const concertId = btn.getAttribute('data-id');
+                    if (confirm('Вы уверены, что хотите удалить этот концерт?')) {
+                        await deleteConcert(concertId);
+                    }
+                });
+            });
+        }
+
+        // Показать страницу видео
+        async function showVideoPage(concertId) {
+            const concert = concerts.find(c => c.id === concertId);
+            if (!concert) return;
+
+            // Увеличиваем счетчик просмотров
+            try {
+                await fetch(`${API_BASE}/api/concert/${concertId}/view`, { 
+                    method: 'POST' 
+                });
+            } catch (error) {
+                console.error('Ошибка увеличения просмотров:', error);
+            }
+
+            // Обновляем UI
+            document.getElementById('video-page-title').textContent = concert.title;
+            document.getElementById('video-page-date').textContent = concert.date;
+            document.getElementById('video-page-description').textContent = concert.description;
+            document.getElementById('video-page-views').innerHTML = `<i class="fas fa-eye"></i> ${concert.views + 1} просмотров`;
+
+            // Загружаем видео
+            mainVideo.src = `${API_BASE}/video/${concert.video_file}`;
             
-            // Проверяем, есть ли сохраненный пользователь
-            if (currentUser) {
-                updateAuthUI();
+            // Показываем кнопку удаления для админа
+            document.getElementById('video-admin-controls').style.display = currentUser ? 'block' : 'none';
+
+            currentConcertId = concertId;
+            showPage('video-page');
+        }
+
+        // Удалить концерт
+        async function deleteConcert(concertId) {
+            if (!currentUser) {
+                alert('Необходима авторизация');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/concert/${concertId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    await loadConcerts();
+                    showPage('home-page');
+                    alert('Концерт успешно удален!');
+                } else {
+                    alert('Ошибка при удалении концерта');
+                }
+            } catch (error) {
+                console.error('Ошибка удаления:', error);
+                alert('Ошибка соединения с сервером');
             }
         }
-        
-        // Обновление интерфейса авторизации
-        function updateAuthUI() {
-            if (currentUser) {
-                authBtn.textContent = 'Выйти';
-                userInfo.style.display = 'flex';
-                usernameDisplay.textContent = `👤 ${currentUser.username}${currentUser.isAdmin ? ' (админ)' : ''}`;
-                
-                // Показываем кнопку загрузки только для авторизованных пользователей
-                navUpload.style.display = 'block';
-                heroUploadBtn.style.display = 'block';
-            } else {
-                authBtn.textContent = 'Войти';
-                userInfo.style.display = 'none';
-                
-                // Скрываем кнопку загрузки для неавторизованных пользователей
-                navUpload.style.display = 'none';
-                heroUploadBtn.style.display = 'none';
+
+        // Загрузка нового концерта
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('Для загрузки концерта необходимо войти в систему');
+                return;
             }
-        }
-        
+
+            const videoFile = videoFileInput.files[0];
+            if (!videoFile) {
+                alert('Пожалуйста, выберите видео файл');
+                return;
+            }
+
+            if (videoFile.size > 7 * 1024 * 1024 * 1024) {
+                alert('Файл слишком большой! Максимальный размер: 7 ГБ');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('video-title').value);
+            formData.append('description', document.getElementById('video-description').value);
+            formData.append('date', document.getElementById('video-date').value);
+            formData.append('video', videoFile);
+            
+            const thumbnailFile = thumbnailInput.files[0];
+            if (thumbnailFile) {
+                formData.append('thumbnail', thumbnailFile);
+            }
+
+            const submitBtn = uploadForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="loading"></div> Загрузка...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Концерт успешно загружен!');
+                    uploadForm.reset();
+                    fileInfo.innerHTML = '';
+                    await loadConcerts();
+                    showPage('home-page');
+                } else {
+                    alert(result.error || 'Ошибка загрузки');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка соединения с сервером');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
         // Навигация
+        function showPage(pageName) {
+            homePage.style.display = 'none';
+            uploadPage.style.display = 'none';
+            videoPage.style.display = 'none';
+            
+            navHome.classList.remove('active');
+            navUpload.classList.remove('active');
+
+            if (pageName === 'home-page') {
+                homePage.style.display = 'block';
+                navHome.classList.add('active');
+            } else if (pageName === 'upload-page') {
+                uploadPage.style.display = 'block';
+                navUpload.classList.add('active');
+            } else if (pageName === 'video-page') {
+                videoPage.style.display = 'block';
+            }
+        }
+
+        // Обработчики навигации
         navHome.addEventListener('click', (e) => {
             e.preventDefault();
-            showHomePage();
+            showPage('home-page');
         });
-        
+
         navUpload.addEventListener('click', (e) => {
             e.preventDefault();
             if (currentUser) {
-                showUploadPage();
+                showPage('upload-page');
             } else {
                 showAuthModal();
             }
         });
-        
+
         heroUploadBtn.addEventListener('click', () => {
             if (currentUser) {
-                showUploadPage();
+                showPage('upload-page');
             } else {
                 showAuthModal();
             }
         });
-        
+
         backBtn.addEventListener('click', () => {
-            showHomePage();
+            showPage('home-page');
         });
-        
+
         uploadBackBtn.addEventListener('click', () => {
-            showHomePage();
+            showPage('home-page');
         });
-        
-        // Авторизация
-        authBtn.addEventListener('click', () => {
-            if (currentUser) {
-                // Выход из системы
-                currentUser = null;
-                localStorage.removeItem('bazaMusicCurrentUser');
-                updateAuthUI();
-                showHomePage();
-            } else {
-                showAuthModal();
-            }
-        });
-        
-        function showAuthModal() {
-            authModal.style.display = 'flex';
-        }
-        
-        function hideAuthModal() {
-            authModal.style.display = 'none';
-        }
-        
-        closeAuth.addEventListener('click', hideAuthModal);
-        
-        // Переключение между вкладками входа и регистрации
-        loginTab.addEventListener('click', () => {
-            loginTab.classList.add('active');
-            registerTab.classList.remove('active');
-            loginForm.style.display = 'flex';
-            registerForm.style.display = 'none';
-        });
-        
-        registerTab.addEventListener('click', () => {
-            registerTab.classList.add('active');
-            loginTab.classList.remove('active');
-            registerForm.style.display = 'flex';
-            loginForm.style.display = 'none';
-        });
-        
-        // Обработка формы входа
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            
-            const user = users.find(u => u.username === username && u.password === password);
-            
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('bazaMusicCurrentUser', JSON.stringify(currentUser));
-                updateAuthUI();
-                hideAuthModal();
-                alert(`Добро пожаловать, ${username}!`);
-            } else {
-                alert('Неверное имя пользователя или пароль');
-            }
-        });
-        
-        // Обработка формы регистрации
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('register-username').value;
-            const password = document.getElementById('register-password').value;
-            const confirm = document.getElementById('register-confirm').value;
-            
-            if (password !== confirm) {
-                alert('Пароли не совпадают');
-                return;
-            }
-            
-            if (users.find(u => u.username === username)) {
-                alert('Пользователь с таким именем уже существует');
-                return;
-            }
-            
-            const newUser = {
-                username,
-                password,
-                isAdmin: false
-            };
-            
-            users.push(newUser);
-            localStorage.setItem('bazaMusicUsers', JSON.stringify(users));
-            
-            currentUser = newUser;
-            localStorage.setItem('bazaMusicCurrentUser', JSON.stringify(currentUser));
-            updateAuthUI();
-            hideAuthModal();
-            alert(`Аккаунт ${username} успешно создан!`);
-        });
-        
-        function showHomePage() {
-            homePage.style.display = 'block';
-            uploadPage.style.display = 'none';
-            videoPage.style.display = 'none';
-            navHome.classList.add('active');
-            navUpload.classList.remove('active');
-            renderConcerts();
-        }
-        
-        function showUploadPage() {
-            if (!currentUser) {
-                showAuthModal();
-                return;
-            }
-            
-            homePage.style.display = 'none';
-            uploadPage.style.display = 'block';
-            videoPage.style.display = 'none';
-            navHome.classList.remove('active');
-            navUpload.classList.add('active');
-        }
-        
-        function showVideoPage(concertId) {
-            homePage.style.display = 'none';
-            uploadPage.style.display = 'none';
-            videoPage.style.display = 'block';
-            navHome.classList.remove('active');
-            navUpload.classList.remove('active');
-            
-            currentConcertId = concertId;
-            const concert = concerts.find(c => c.id === concertId);
-            
-            if (concert) {
-                document.getElementById('video-page-title').textContent = concert.title;
-                document.getElementById('video-page-date').textContent = concert.date;
-                document.getElementById('video-page-description').textContent = concert.description;
-                document.getElementById('video-page-views').textContent = `${concert.views} просмотров`;
-                
-                // Показываем кнопку удаления только для админа
-                if (currentUser && currentUser.isAdmin) {
-                    document.getElementById('video-admin-controls').style.display = 'block';
-                } else {
-                    document.getElementById('video-admin-controls').style.display = 'none';
-                }
-                
-                // Всегда показываем placeholder вместо видео
-                videoPlaceholder.style.display = 'flex';
-                mainVideo.style.display = 'none';
-                playerControls.style.display = 'none';
-                
-                // Увеличиваем счетчик просмотров
-                concert.views++;
-                saveConcerts();
-            }
-        }
-        
-        // Загрузка файлов
+
+        // Работа с файлами
         fileUploadArea.addEventListener('click', () => {
             videoFileInput.click();
         });
-        
+
         fileUploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             fileUploadArea.classList.add('dragover');
         });
-        
+
         fileUploadArea.addEventListener('dragleave', () => {
             fileUploadArea.classList.remove('dragover');
         });
-        
+
         fileUploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             fileUploadArea.classList.remove('dragover');
@@ -1230,16 +1280,15 @@
                 updateFileInfo();
             }
         });
-        
+
         videoFileInput.addEventListener('change', updateFileInfo);
-        
+
         function updateFileInfo() {
             if (videoFileInput.files.length) {
                 const file = videoFileInput.files[0];
                 const fileSize = (file.size / (1024 * 1024 * 1024)).toFixed(2);
                 fileInfo.innerHTML = `Выбран файл: <strong>${file.name}</strong> (${fileSize} ГБ)`;
                 
-                // Проверка размера файла
                 if (file.size > 7 * 1024 * 1024 * 1024) {
                     fileInfo.innerHTML += `<br><span style="color: #ff5e00;">Файл слишком большой! Максимальный размер: 7 ГБ</span>`;
                 }
@@ -1247,175 +1296,115 @@
                 fileInfo.innerHTML = '';
             }
         }
-        
-        // Обработка формы загрузки
-        uploadForm.addEventListener('submit', (e) => {
+
+        thumbnailUploadArea.addEventListener('click', () => {
+            thumbnailInput.click();
+        });
+
+        // Авторизация
+        function showAuthModal() {
+            authModal.style.display = 'flex';
+        }
+
+        function hideAuthModal() {
+            authModal.style.display = 'none';
+        }
+
+        closeAuth.addEventListener('click', hideAuthModal);
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (!currentUser) {
-                alert('Для загрузки концерта необходимо войти в систему');
-                return;
-            }
-            
-            const title = document.getElementById('video-title').value;
-            const description = document.getElementById('video-description').value;
-            const date = document.getElementById('video-date').value;
-            const videoFile = videoFileInput.files[0];
-            
-            if (!videoFile) {
-                alert('Пожалуйста, выберите видео файл');
-                return;
-            }
-            
-            if (videoFile.size > 7 * 1024 * 1024 * 1024) {
-                alert('Файл слишком большой! Максимальный размер: 7 ГБ');
-                return;
-            }
-            
-            // Вычисляем длительность видео
-            const tempVideo = document.createElement('video');
-            tempVideo.src = URL.createObjectURL(videoFile);
-            
-            tempVideo.addEventListener('loadedmetadata', () => {
-                const duration = formatTime(tempVideo.duration);
-                
-                // Создаем объект концерта
-                const newConcert = {
-                    id: Date.now().toString(),
-                    title,
-                    description,
-                    date: formatDate(date),
-                    duration: duration,
-                    views: 0,
-                    uploadedBy: currentUser.username,
-                    lastUpdated: Date.now(),
-                    fileName: videoFile.name,
-                    fileSize: (videoFile.size / (1024 * 1024 * 1024)).toFixed(2) + ' ГБ'
-                };
-                
-                // Добавляем концерт в массив
-                concerts.unshift(newConcert);
-                saveConcerts();
-                
-                // Очищаем форму
-                uploadForm.reset();
-                fileInfo.innerHTML = '';
-                
-                // Показываем главную страницу
-                showHomePage();
-                
-                alert('Концерт успешно загружен!');
-                
-                // Освобождаем blob URL
-                URL.revokeObjectURL(tempVideo.src);
-            });
-        });
-        
-        // Удаление концерта
-        deleteVideoBtn.addEventListener('click', () => {
-            if (!currentUser || !currentUser.isAdmin) {
-                alert('У вас нет прав для удаления концертов');
-                return;
-            }
-            
-            if (currentConcertId && confirm('Вы уверены, что хотите удалить этот концерт?')) {
-                // Удаляем концерт из массива
-                concerts = concerts.filter(concert => concert.id !== currentConcertId);
-                saveConcerts();
-                
-                // Показываем главную страницу
-                showHomePage();
-                
-                alert('Концерт успешно удален!');
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            // Простая проверка (в реальном приложении - запрос к серверу)
+            if (username === 'admin' && password === 'admin') {
+                currentUser = { username: 'admin', isAdmin: true };
+                updateAuthUI();
+                hideAuthModal();
+                alert('Добро пожаловать, Администратор!');
+            } else {
+                alert('Неверные данные для входа');
             }
         });
-        
-        // Сохранение концертов в localStorage
-        function saveConcerts() {
-            localStorage.setItem('bazaMusicConcerts', JSON.stringify(concerts));
-        }
-        
-        // Отображение концертов на главной странице
-        function renderConcerts() {
-            if (concerts.length === 0) {
-                videoGrid.innerHTML = `
-                    <div class="no-videos">
-                        <p>🎵 Пока нет загруженных концертов</p>
-                        <p>Станьте первым, кто загрузит концерт BAZA MUSIC!</p>
-                        ${!currentUser ? '<p style="margin-top: 1rem; color: #ff5e00;">Для загрузки необходимо войти в систему</p>' : ''}
-                    </div>
-                `;
-                return;
+
+        authBtn.addEventListener('click', () => {
+            if (currentUser) {
+                currentUser = null;
+                updateAuthUI();
+            } else {
+                showAuthModal();
             }
-            
-            videoGrid.innerHTML = concerts.map(concert => `
-                <div class="video-card" data-id="${concert.id}">
-                    ${currentUser && currentUser.isAdmin ? `
-                        <div class="admin-controls">
-                            <button class="btn btn-delete delete-concert-btn" data-id="${concert.id}">×</button>
-                        </div>
-                    ` : ''}
-                    <div class="video-thumbnail">
-                        <div class="thumbnail-placeholder">🎵</div>
-                        <div class="video-duration">${concert.duration}</div>
-                    </div>
-                    <div class="video-info">
-                        <h3 class="video-title">${concert.title}</h3>
-                        <div class="video-meta">
-                            <span class="video-views">${concert.views}</span>
-                            <span class="video-date">${concert.date}</span>
-                        </div>
-                        <div class="video-file-info">
-                            📁 ${concert.fileName} • ${concert.fileSize}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Добавляем обработчики событий для карточек концертов
-            document.querySelectorAll('.video-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    // Если клик был по кнопке удаления, не открываем видео
-                    if (e.target.classList.contains('delete-concert-btn')) {
-                        e.stopPropagation();
-                        return;
-                    }
-                    
-                    const concertId = card.getAttribute('data-id');
-                    showVideoPage(concertId);
-                });
-            });
-            
-            // Добавляем обработчики для кнопок удаления
-            document.querySelectorAll('.delete-concert-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    if (!currentUser || !currentUser.isAdmin) {
-                        alert('У вас нет прав для удаления концертов');
-                        return;
-                    }
-                    
-                    const concertId = btn.getAttribute('data-id');
-                    if (confirm('Вы уверены, что хотите удалить этот концерт?')) {
-                        // Удаляем концерт из массива
-                        concerts = concerts.filter(concert => concert.id !== concertId);
-                        saveConcerts();
-                        
-                        // Перерисовываем концерты
-                        renderConcerts();
-                        
-                        alert('Концерт успешно удален!');
-                    }
-                });
-            });
+        });
+
+        function updateAuthUI() {
+            if (currentUser) {
+                authBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
+                userInfo.style.display = 'flex';
+                usernameDisplay.textContent = `${currentUser.username}${currentUser.isAdmin ? ' (админ)' : ''}`;
+                navUpload.style.display = 'block';
+                heroUploadBtn.style.display = 'block';
+            } else {
+                authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+                userInfo.style.display = 'none';
+                navUpload.style.display = 'none';
+                heroUploadBtn.style.display = 'none';
+            }
         }
-        
-        // Форматирование даты
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ru-RU');
-        }
-        
-        // Форматирование времени
+
+        // Управление видео
+        const playPauseBtn = document.getElementById('play-pause');
+        const muteBtn = document.getElementById('mute');
+        const progressBar = document.getElementById('progress-bar');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const fullscreenBtn = document.getElementById('fullscreen');
+
+        playPauseBtn.addEventListener('click', () => {
+            if (mainVideo.paused) {
+                mainVideo.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                mainVideo.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        muteBtn.addEventListener('click', () => {
+            mainVideo.muted = !mainVideo.muted;
+            muteBtn.innerHTML = mainVideo.muted ? 
+                '<i class="fas fa-volume-mute"></i>' : 
+                '<i class="fas fa-volume-up"></i>';
+        });
+
+        mainVideo.addEventListener('timeupdate', () => {
+            const percent = (mainVideo.currentTime / mainVideo.duration) * 100;
+            progress.style.width = `${percent}%`;
+            currentTimeEl.textContent = formatTime(mainVideo.currentTime);
+        });
+
+        mainVideo.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(mainVideo.duration);
+        });
+
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            mainVideo.currentTime = percent * mainVideo.duration;
+        });
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                videoPage.requestFullscreen().catch(err => {
+                    console.error(`Ошибка полноэкранного режима: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
         function formatTime(seconds) {
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
@@ -1427,8 +1416,22 @@
                 return `${m}:${s.toString().padStart(2, '0')}`;
             }
         }
-        
+
+        // Удаление концерта со страницы просмотра
+        deleteVideoBtn.addEventListener('click', async () => {
+            if (currentConcertId) {
+                await deleteConcert(currentConcertId);
+            }
+        });
+
         // Инициализация
+        async function init() {
+            await checkServerStatus();
+            await loadConcerts();
+            updateAuthUI();
+        }
+
+        // Запуск приложения
         init();
     </script>
 </body>
