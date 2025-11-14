@@ -108,29 +108,23 @@
             border-radius: 6px;
         }
         
-        .sync-status {
+        .server-status {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.9rem;
-            color: #4CAF50;
             padding: 0.4rem 0.8rem;
-            background: rgba(76, 175, 80, 0.1);
             border-radius: 6px;
         }
         
-        .sync-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #4CAF50;
-            animation: pulse 2s infinite;
+        .server-status.online {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
+        .server-status.offline {
+            color: #f44336;
+            background: rgba(244, 67, 54, 0.1);
         }
         
         .btn {
@@ -185,51 +179,37 @@
         
         .hero {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 3rem 2rem;
             background: linear-gradient(135deg, rgba(255, 94, 0, 0.1), rgba(255, 140, 0, 0.05));
-            border-radius: 20px;
-            margin-bottom: 3rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
             border: 1px solid rgba(255, 94, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="music" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="%23ff5e00" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23music)"/></svg>');
         }
         
         .hero h2 {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
             background: linear-gradient(135deg, #ff5e00, #ffbb00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            position: relative;
         }
         
         .hero p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin: 0 auto 2.5rem;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
             color: #ccc;
-            line-height: 1.8;
-            position: relative;
+            line-height: 1.6;
         }
         
         .featured-videos {
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
         
         .section-title {
-            font-size: 2.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
             padding-bottom: 0.5rem;
             border-bottom: 3px solid #ff5e00;
             display: inline-block;
@@ -241,8 +221,8 @@
         
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
         
         .video-card {
@@ -257,14 +237,14 @@
         }
         
         .video-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(255, 94, 0, 0.2);
             border-color: #ff5e00;
         }
         
         .video-thumbnail {
             position: relative;
-            height: 200px;
+            height: 180px;
             overflow: hidden;
             background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
             display: flex;
@@ -278,32 +258,16 @@
             object-fit: cover;
         }
         
-        .video-thumbnail::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 94, 0, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .video-card:hover .video-thumbnail::before {
-            opacity: 1;
-        }
-        
         .thumbnail-placeholder {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: #ff5e00;
             opacity: 0.7;
         }
         
         .video-duration {
             position: absolute;
-            bottom: 12px;
-            right: 12px;
+            bottom: 10px;
+            right: 10px;
             background: rgba(0, 0, 0, 0.8);
             padding: 4px 8px;
             border-radius: 6px;
@@ -312,12 +276,12 @@
         }
         
         .video-info {
-            padding: 1.5rem;
+            padding: 1.2rem;
         }
         
         .video-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
             font-weight: 700;
             color: #fff;
             line-height: 1.4;
@@ -327,13 +291,13 @@
             display: flex;
             justify-content: space-between;
             color: #aaa;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 0.5rem;
         }
         
         .video-file-info {
             color: #666;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             margin-top: 0.5rem;
             padding-top: 0.5rem;
             border-top: 1px solid #333;
@@ -341,8 +305,8 @@
         
         .admin-controls {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 10px;
+            right: 10px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -361,7 +325,7 @@
             background: #000;
             border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             border: 1px solid #333;
         }
         
@@ -371,106 +335,45 @@
             display: block;
         }
         
-        .player-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.2rem;
-            background: #1a1a1a;
-            border-radius: 12px;
-            border: 1px solid #333;
-            margin-bottom: 2rem;
-        }
-        
-        .control-group {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-        
-        .control-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            padding: 0.5rem;
-            border-radius: 6px;
-        }
-        
-        .control-btn:hover {
-            color: #ff5e00;
-            background: rgba(255, 94, 0, 0.1);
-        }
-        
-        .progress-container {
-            flex-grow: 1;
-            margin: 0 1.5rem;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background-color: #333;
-            border-radius: 3px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .progress {
-            height: 100%;
-            background: linear-gradient(90deg, #ff5e00, #ffbb00);
-            width: 0%;
-            transition: width 0.1s;
-        }
-        
-        .time-display {
-            font-size: 0.9rem;
-            color: #aaa;
-            font-weight: 600;
-        }
-        
         .video-details {
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.5rem;
             margin-bottom: 2rem;
             border: 1px solid #333;
             position: relative;
         }
         
         .video-details h2 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             margin-bottom: 1rem;
             color: #fff;
         }
         
         .video-description {
             color: #ccc;
-            line-height: 1.7;
-            font-size: 1.1rem;
+            line-height: 1.6;
         }
         
         .video-stats {
             display: flex;
             gap: 2rem;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             color: #aaa;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         
         .back-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.5rem;
             background: rgba(255, 94, 0, 0.1);
             border: 2px solid #ff5e00;
             color: #ff5e00;
             font-size: 1rem;
             cursor: pointer;
             margin-bottom: 1.5rem;
-            padding: 0.8rem 1.5rem;
+            padding: 0.7rem 1.2rem;
             border-radius: 8px;
             transition: all 0.3s;
             font-weight: 600;
@@ -484,7 +387,7 @@
         .upload-section {
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
             border-radius: 12px;
-            padding: 2.5rem;
+            padding: 2rem;
             margin-bottom: 2rem;
             border: 1px solid #333;
         }
@@ -492,23 +395,23 @@
         .upload-form {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.5rem;
         }
         
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.5rem;
         }
         
         .form-group label {
             font-weight: 600;
             color: #fff;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         
         .form-control {
-            padding: 1rem;
+            padding: 0.8rem;
             background: #2a2a2a;
             border: 2px solid #444;
             border-radius: 8px;
@@ -524,7 +427,7 @@
         }
         
         textarea.form-control {
-            min-height: 140px;
+            min-height: 120px;
             resize: vertical;
             line-height: 1.6;
         }
@@ -534,9 +437,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 3rem 2rem;
-            border: 3px dashed #444;
-            border-radius: 12px;
+            padding: 2rem;
+            border: 2px dashed #444;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             background: rgba(42, 42, 42, 0.5);
@@ -547,20 +450,15 @@
             background: rgba(255, 94, 0, 0.05);
         }
         
-        .file-upload.dragover {
-            border-color: #ff5e00;
-            background: rgba(255, 94, 0, 0.1);
-        }
-        
         .file-upload-icon {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             color: #ff5e00;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .file-info {
             margin-top: 1rem;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #aaa;
             text-align: center;
         }
@@ -569,186 +467,37 @@
             color: #ff5e00;
         }
         
-        .auth-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        
-        .auth-content {
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            padding: 2.5rem;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid #333;
-            position: relative;
-        }
-        
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #333;
-        }
-        
-        .auth-tab {
-            flex: 1;
-            padding: 1rem;
-            text-align: center;
-            background: none;
-            border: none;
-            color: #aaa;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-        
-        .auth-tab.active {
-            color: #ff5e00;
-            border-bottom: 3px solid #ff5e00;
-        }
-        
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        
-        .auth-form h3 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            color: #fff;
-            font-size: 1.5rem;
-        }
-        
-        .close-auth {
-            position: absolute;
-            top: 1.2rem;
-            right: 1.5rem;
-            background: none;
-            border: none;
-            color: #aaa;
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .close-auth:hover {
-            color: #ff5e00;
-        }
-        
-        footer {
-            background: rgba(26, 26, 26, 0.95);
-            padding: 3rem 2rem;
-            margin-top: 4rem;
-            text-align: center;
-            border-top: 1px solid #333;
-        }
-        
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2.5rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .footer-links a {
-            color: #aaa;
-            text-decoration: none;
-            transition: color 0.3s;
-            font-weight: 500;
-        }
-        
-        .footer-links a:hover {
-            color: #ff5e00;
-        }
-        
-        .copyright {
-            color: #666;
-            font-size: 0.95rem;
-        }
-        
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-            
-            nav ul {
-                gap: 1rem;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 1.5rem;
-            }
-            
-            .hero h2 {
-                font-size: 2.2rem;
-            }
-            
-            .player-controls {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-            
-            .progress-container {
-                order: 3;
-                flex-basis: 100%;
-                margin: 0;
-            }
-            
-            .footer-links {
-                gap: 1.5rem;
-            }
-        }
-        
         .no-videos {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 3rem 2rem;
             color: #666;
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
             border-radius: 12px;
             border: 2px dashed #333;
         }
         
-        .no-videos p {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .server-status {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+        .connection-info {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
             color: white;
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 1.5rem;
             border-radius: 8px;
             margin-bottom: 2rem;
             text-align: center;
-            border-left: 4px solid #66BB6A;
+            border-left: 4px solid #64B5F6;
         }
         
-        .server-status.offline {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            border-left-color: #ef5350;
+        footer {
+            background: rgba(26, 26, 26, 0.95);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+        
+        .copyright {
+            color: #666;
+            font-size: 0.9rem;
         }
         
         .loading {
@@ -764,6 +513,28 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -776,15 +547,13 @@
             <nav>
                 <ul>
                     <li><a href="#" class="active" id="nav-home"><i class="fas fa-home"></i> Главная</a></li>
-                    <li><a href="#" id="nav-upload"><i class="fas fa-upload"></i> Загрузить концерт</a></li>
-                    <li><a href="#"><i class="fas fa-users"></i> О группе</a></li>
-                    <li><a href="#"><i class="fas fa-envelope"></i> Контакты</a></li>
+                    <li><a href="#" id="nav-upload"><i class="fas fa-upload"></i> Загрузить</a></li>
                 </ul>
             </nav>
             <div class="user-actions">
-                <div class="sync-status">
-                    <div class="sync-indicator"></div>
-                    <span id="sync-status-text"><i class="fas fa-sync-alt"></i> Онлайн</span>
+                <div class="server-status offline" id="server-status">
+                    <i class="fas fa-server"></i>
+                    <span id="server-status-text">Проверка...</span>
                 </div>
                 <div class="user-info" id="user-info" style="display: none;">
                     <i class="fas fa-user"></i>
@@ -796,20 +565,22 @@
     </header>
 
     <main>
-        <!-- Главная страница -->
         <div id="home-page">
-            <div class="server-status" id="server-status">
-                <i class="fas fa-server"></i> Сервер подключен
+            <div class="connection-info">
+                <i class="fas fa-network-wired"></i> 
+                <strong>Подключение к серверу:</strong> 
+                <span id="connection-ip">192.168.0.106:5000</span>
+                <span id="connection-status"></span>
             </div>
 
             <section class="hero">
-                <h2>Концерты BAZA MUSIC в высоком качестве</h2>
-                <p>Смотрите полные записи концертов группы BAZA MUSIC в премиальном качестве. Все видео загружаются на сервер и доступны для просмотра.</p>
+                <h2>Концерты BAZA MUSIC</h2>
+                <p>Платформа для хранения и просмотра концертов. Видео загружаются на локальный сервер.</p>
                 <button class="btn btn-upload" id="hero-upload-btn"><i class="fas fa-upload"></i> Загрузить концерт</button>
             </section>
 
             <section class="featured-videos">
-                <h2 class="section-title">Концерты BAZA MUSIC</h2>
+                <h2 class="section-title">Концерты</h2>
                 <div class="video-grid" id="video-grid">
                     <div class="no-videos">
                         <p><i class="fas fa-spinner fa-spin"></i> Загрузка концертов...</p>
@@ -818,85 +589,61 @@
             </section>
         </div>
         
-        <!-- Страница загрузки -->
         <div id="upload-page" style="display: none;">
-            <button class="back-btn" id="upload-back-btn"><i class="fas fa-arrow-left"></i> Назад к концертам</button>
+            <button class="back-btn" id="upload-back-btn"><i class="fas fa-arrow-left"></i> Назад</button>
             
             <section class="upload-section">
-                <h2 class="section-title">Загрузить новый концерт</h2>
+                <h2 class="section-title">Загрузить концерт</h2>
                 
                 <form class="upload-form" id="upload-form">
                     <div class="form-group">
-                        <label for="video-title"><i class="fas fa-heading"></i> Название концерта</label>
-                        <input type="text" id="video-title" class="form-control" placeholder="Например: BAZA MUSIC Live в Москве 2023" required>
+                        <label for="video-title"><i class="fas fa-heading"></i> Название</label>
+                        <input type="text" id="video-title" class="form-control" placeholder="BAZA MUSIC Live 2024" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-description"><i class="fas fa-align-left"></i> Описание концерта</label>
-                        <textarea id="video-description" class="form-control" placeholder="Опишите концерт, место проведения, дату и другие детали..." required></textarea>
+                        <label for="video-description"><i class="fas fa-align-left"></i> Описание</label>
+                        <textarea id="video-description" class="form-control" placeholder="Описание концерта..." required></textarea>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-date"><i class="fas fa-calendar-alt"></i> Дата концерта</label>
+                        <label for="video-date"><i class="fas fa-calendar-alt"></i> Дата</label>
                         <input type="date" id="video-date" class="form-control" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-file"><i class="fas fa-video"></i> Видео файл (MP4, до 7 ГБ)</label>
+                        <label for="video-file"><i class="fas fa-video"></i> Видео файл (MP4)</label>
                         <div class="file-upload" id="file-upload-area">
                             <div class="file-upload-icon"><i class="fas fa-file-video"></i></div>
-                            <p>Перетащите видео файл сюда или нажмите для выбора</p>
-                            <p class="file-info">Поддерживаются файлы MP4 до 7 ГБ</p>
+                            <p>Выберите видео файл MP4</p>
                             <input type="file" id="video-file" accept="video/mp4" style="display: none;">
                         </div>
-                        <div id="file-info" style="margin-top: 1rem;"></div>
+                        <div id="file-info"></div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="video-thumbnail"><i class="fas fa-image"></i> Обложка концерта (опционально)</label>
+                        <label for="video-thumbnail"><i class="fas fa-image"></i> Обложка (опционально)</label>
                         <div class="file-upload" id="thumbnail-upload-area">
                             <div class="file-upload-icon"><i class="fas fa-file-image"></i></div>
-                            <p>Перетащите изображение обложки или нажмите для выбора</p>
-                            <p class="file-info">Рекомендуемый размер: 1280x720px</p>
+                            <p>Выберите обложку</p>
                             <input type="file" id="video-thumbnail" accept="image/*" style="display: none;">
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-upload" style="align-self: flex-start;">
-                        <i class="fas fa-upload"></i> Загрузить на сервер
+                    <button type="submit" class="btn btn-upload">
+                        <i class="fas fa-cloud-upload-alt"></i> Загрузить на сервер
                     </button>
                 </form>
             </section>
         </div>
         
-        <!-- Страница просмотра видео -->
         <div id="video-page" class="video-player-container">
-            <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i> Назад к концертам</button>
+            <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i> Назад</button>
             
             <div class="video-player">
                 <video id="main-video" controls>
                     Ваш браузер не поддерживает видео тег.
                 </video>
-            </div>
-            
-            <div class="player-controls">
-                <div class="control-group">
-                    <button class="control-btn" id="play-pause"><i class="fas fa-play"></i></button>
-                    <button class="control-btn" id="mute"><i class="fas fa-volume-up"></i></button>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" id="progress-bar">
-                        <div class="progress" id="progress"></div>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <span class="time-display" id="current-time">0:00</span>
-                    <span class="time-display">/</span>
-                    <span class="time-display" id="duration">0:00</span>
-                    <button class="control-btn" id="fullscreen"><i class="fas fa-expand"></i></button>
-                </div>
             </div>
             
             <div class="video-details">
@@ -906,56 +653,26 @@
                     <span class="video-date" id="video-page-date"><i class="fas fa-calendar"></i> Дата</span>
                 </div>
                 <p class="video-description" id="video-page-description">
-                    Описание концерта появится здесь.
+                    Описание концерта...
                 </p>
                 <div class="admin-controls" id="video-admin-controls">
                     <button class="btn btn-delete" id="delete-video-btn">
-                        <i class="fas fa-trash"></i> Удалить концерт
+                        <i class="fas fa-trash"></i> Удалить
                     </button>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Модальное окно авторизации -->
-    <div class="auth-modal" id="auth-modal">
-        <div class="auth-content">
-            <button class="close-auth" id="close-auth">&times;</button>
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="login-tab"><i class="fas fa-sign-in-alt"></i> Вход</button>
-            </div>
-            
-            <form class="auth-form" id="login-form">
-                <h3>Вход для администратора</h3>
-                <div class="form-group">
-                    <label for="login-username"><i class="fas fa-user"></i> Логин</label>
-                    <input type="text" id="login-username" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password"><i class="fas fa-lock"></i> Пароль</label>
-                    <input type="password" id="login-password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-upload"><i class="fas fa-sign-in-alt"></i> Войти</button>
-            </form>
-        </div>
-    </div>
-
     <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#"><i class="fas fa-home"></i> Главная</a>
-                <a href="#"><i class="fas fa-video"></i> Концерты</a>
-                <a href="#"><i class="fas fa-users"></i> О группе</a>
-                <a href="#"><i class="fas fa-envelope"></i> Контакты</a>
-                <a href="#"><i class="fas fa-shield-alt"></i> Политика конфиденциальности</a>
-            </div>
-            <p class="copyright">© 2024 BAZA MUSIC. Все права защищены.</p>
+        <div class="copyright">
+            © 2024 BAZA MUSIC | Сервер: 192.168.0.106:5000
         </div>
     </footer>
 
     <script>
-        // Конфигурация
-        const API_BASE = 'http://localhost:5000'; // Замени на URL своего сервера
+        // Конфигурация - ЗАМЕНИ НА СВОЙ IP ЕСЛИ ИЗМЕНИТСЯ
+        const API_BASE = 'http://192.168.0.106:5000';
         
         // Состояние приложения
         let currentUser = null;
@@ -974,52 +691,58 @@
         const thumbnailInput = document.getElementById('video-thumbnail');
         const fileInfo = document.getElementById('file-info');
         const mainVideo = document.getElementById('main-video');
-        const backBtn = document.getElementById('back-btn');
-        const uploadBackBtn = document.getElementById('upload-back-btn');
-        const navHome = document.getElementById('nav-home');
-        const navUpload = document.getElementById('nav-upload');
-        const heroUploadBtn = document.getElementById('hero-upload-btn');
-        const deleteVideoBtn = document.getElementById('delete-video-btn');
-        const authBtn = document.getElementById('auth-btn');
-        const authModal = document.getElementById('auth-modal');
-        const closeAuth = document.getElementById('close-auth');
-        const loginTab = document.getElementById('login-tab');
-        const loginForm = document.getElementById('login-form');
-        const userInfo = document.getElementById('user-info');
-        const usernameDisplay = document.getElementById('username-display');
-        const syncStatusText = document.getElementById('sync-status-text');
         const serverStatus = document.getElementById('server-status');
+        const serverStatusText = document.getElementById('server-status-text');
+        const connectionStatus = document.getElementById('connection-status');
 
         // Проверка подключения к серверу
-        async function checkServerStatus() {
+        async function checkServerConnection() {
             try {
-                const response = await fetch(`${API_BASE}/api/concerts`);
+                const response = await fetch(`${API_BASE}/api/health`);
                 if (response.ok) {
-                    serverStatus.innerHTML = '<i class="fas fa-server"></i> Сервер подключен';
-                    serverStatus.className = 'server-status';
-                } else {
-                    throw new Error('Server error');
+                    serverStatus.className = 'server-status online';
+                    serverStatusText.innerHTML = '<i class="fas fa-check"></i> Сервер онлайн';
+                    connectionStatus.innerHTML = '<span style="color:#4CAF50"> ✓ Подключено</span>';
+                    return true;
                 }
             } catch (error) {
-                serverStatus.innerHTML = '<i class="fas fa-server"></i> Сервер недоступен';
-                serverStatus.className = 'server-status offline';
+                console.log('Сервер недоступен:', error);
             }
+            
+            serverStatus.className = 'server-status offline';
+            serverStatusText.innerHTML = '<i class="fas fa-times"></i> Сервер оффлайн';
+            connectionStatus.innerHTML = '<span style="color:#f44336"> ✗ Не подключено</span>';
+            return false;
         }
 
         // Загрузка концертов с сервера
         async function loadConcerts() {
+            const isConnected = await checkServerConnection();
+            if (!isConnected) {
+                videoGrid.innerHTML = `
+                    <div class="no-videos">
+                        <p><i class="fas fa-exclamation-triangle"></i> Сервер недоступен</p>
+                        <p>Убедитесь что сервер запущен на ${API_BASE}</p>
+                        <p style="margin-top: 1rem; color: #ff5e00;">
+                            <i class="fas fa-info-circle"></i> Запусти server.py на компьютере
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
             try {
                 const response = await fetch(`${API_BASE}/api/concerts`);
-                if (!response.ok) throw new Error('Server error');
+                if (!response.ok) throw new Error('Ошибка сервера');
                 
                 concerts = await response.json();
                 renderConcerts();
             } catch (error) {
-                console.error('Ошибка загрузки:', error);
+                console.error('Ошибка загрузки концертов:', error);
                 videoGrid.innerHTML = `
                     <div class="no-videos">
-                        <p><i class="fas fa-exclamation-triangle"></i> Ошибка загрузки концертов</p>
-                        <p>Проверьте подключение к серверу</p>
+                        <p><i class="fas fa-exclamation-triangle"></i> Ошибка загрузки</p>
+                        <p>Попробуйте обновить страницу</p>
                     </div>
                 `;
             }
@@ -1030,9 +753,9 @@
             if (concerts.length === 0) {
                 videoGrid.innerHTML = `
                     <div class="no-videos">
-                        <p><i class="fas fa-video-slash"></i> Пока нет загруженных концертов</p>
-                        <p>Будьте первым, кто загрузит концерт BAZA MUSIC!</p>
-                        ${!currentUser ? '<p style="margin-top: 1rem; color: #ff5e00;"><i class="fas fa-info-circle"></i> Для загрузки необходимо войти в систему</p>' : ''}
+                        <p><i class="fas fa-video-slash"></i> Пока нет концертов</p>
+                        <p>Загрузите первый концерт!</p>
+                        ${!currentUser ? '<p style="margin-top: 1rem; color: #ff5e00;"><i class="fas fa-info-circle"></i> Для загрузки войдите как администратор</p>' : ''}
                     </div>
                 `;
                 return;
@@ -1061,13 +784,14 @@
                             <span class="video-date"><i class="fas fa-calendar"></i> ${concert.date}</span>
                         </div>
                         <div class="video-file-info">
-                            <i class="fas fa-hdd"></i> ${concert.file_size} • <i class="fas fa-user"></i> ${concert.uploaded_by || 'Админ'}
+                            <i class="fas fa-hdd"></i> ${concert.file_size} • 
+                            <i class="fas fa-user"></i> ${concert.uploaded_by || 'Админ'}
                         </div>
                     </div>
                 </div>
             `).join('');
 
-            // Обработчики событий для карточек
+            // Обработчики событий
             document.querySelectorAll('.video-card').forEach(card => {
                 card.addEventListener('click', async (e) => {
                     if (e.target.closest('.delete-concert-btn')) return;
@@ -1077,12 +801,11 @@
                 });
             });
 
-            // Обработчики для кнопок удаления
             document.querySelectorAll('.delete-concert-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     e.stopPropagation();
                     const concertId = btn.getAttribute('data-id');
-                    if (confirm('Вы уверены, что хотите удалить этот концерт?')) {
+                    if (confirm('Удалить этот концерт?')) {
                         await deleteConcert(concertId);
                     }
                 });
@@ -1094,7 +817,7 @@
             const concert = concerts.find(c => c.id === concertId);
             if (!concert) return;
 
-            // Увеличиваем счетчик просмотров
+            // Увеличиваем просмотры
             try {
                 await fetch(`${API_BASE}/api/concert/${concertId}/view`, { 
                     method: 'POST' 
@@ -1128,15 +851,18 @@
 
             try {
                 const response = await fetch(`${API_BASE}/api/concert/${concertId}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer admin123'
+                    }
                 });
                 
                 if (response.ok) {
                     await loadConcerts();
                     showPage('home-page');
-                    alert('Концерт успешно удален!');
+                    alert('Концерт удален!');
                 } else {
-                    alert('Ошибка при удалении концерта');
+                    alert('Ошибка при удалении');
                 }
             } catch (error) {
                 console.error('Ошибка удаления:', error);
@@ -1149,13 +875,13 @@
             e.preventDefault();
             
             if (!currentUser) {
-                alert('Для загрузки концерта необходимо войти в систему');
+                alert('Для загрузки войдите как администратор');
                 return;
             }
 
             const videoFile = videoFileInput.files[0];
             if (!videoFile) {
-                alert('Пожалуйста, выберите видео файл');
+                alert('Выберите видео файл');
                 return;
             }
 
@@ -1183,6 +909,9 @@
             try {
                 const response = await fetch(`${API_BASE}/api/upload`, {
                     method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer admin123'
+                    },
                     body: formData
                 });
 
@@ -1212,48 +941,48 @@
             uploadPage.style.display = 'none';
             videoPage.style.display = 'none';
             
-            navHome.classList.remove('active');
-            navUpload.classList.remove('active');
+            document.getElementById('nav-home').classList.remove('active');
+            document.getElementById('nav-upload').classList.remove('active');
 
             if (pageName === 'home-page') {
                 homePage.style.display = 'block';
-                navHome.classList.add('active');
+                document.getElementById('nav-home').classList.add('active');
             } else if (pageName === 'upload-page') {
                 uploadPage.style.display = 'block';
-                navUpload.classList.add('active');
+                document.getElementById('nav-upload').classList.add('active');
             } else if (pageName === 'video-page') {
                 videoPage.style.display = 'block';
             }
         }
 
         // Обработчики навигации
-        navHome.addEventListener('click', (e) => {
+        document.getElementById('nav-home').addEventListener('click', (e) => {
             e.preventDefault();
             showPage('home-page');
         });
 
-        navUpload.addEventListener('click', (e) => {
+        document.getElementById('nav-upload').addEventListener('click', (e) => {
             e.preventDefault();
             if (currentUser) {
                 showPage('upload-page');
             } else {
-                showAuthModal();
+                alert('Для загрузки войдите как администратор');
             }
         });
 
-        heroUploadBtn.addEventListener('click', () => {
+        document.getElementById('hero-upload-btn').addEventListener('click', () => {
             if (currentUser) {
                 showPage('upload-page');
             } else {
-                showAuthModal();
+                alert('Для загрузки войдите как администратор');
             }
         });
 
-        backBtn.addEventListener('click', () => {
+        document.getElementById('back-btn').addEventListener('click', () => {
             showPage('home-page');
         });
 
-        uploadBackBtn.addEventListener('click', () => {
+        document.getElementById('upload-back-btn').addEventListener('click', () => {
             showPage('home-page');
         });
 
@@ -1262,163 +991,54 @@
             videoFileInput.click();
         });
 
-        fileUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.add('dragover');
-        });
-
-        fileUploadArea.addEventListener('dragleave', () => {
-            fileUploadArea.classList.remove('dragover');
-        });
-
-        fileUploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.remove('dragover');
-            
-            if (e.dataTransfer.files.length) {
-                videoFileInput.files = e.dataTransfer.files;
-                updateFileInfo();
-            }
-        });
-
-        videoFileInput.addEventListener('change', updateFileInfo);
-
-        function updateFileInfo() {
-            if (videoFileInput.files.length) {
-                const file = videoFileInput.files[0];
+        videoFileInput.addEventListener('change', function() {
+            if (this.files.length) {
+                const file = this.files[0];
                 const fileSize = (file.size / (1024 * 1024 * 1024)).toFixed(2);
                 fileInfo.innerHTML = `Выбран файл: <strong>${file.name}</strong> (${fileSize} ГБ)`;
-                
-                if (file.size > 7 * 1024 * 1024 * 1024) {
-                    fileInfo.innerHTML += `<br><span style="color: #ff5e00;">Файл слишком большой! Максимальный размер: 7 ГБ</span>`;
-                }
-            } else {
-                fileInfo.innerHTML = '';
             }
-        }
+        });
 
         thumbnailUploadArea.addEventListener('click', () => {
             thumbnailInput.click();
         });
 
         // Авторизация
-        function showAuthModal() {
-            authModal.style.display = 'flex';
-        }
-
-        function hideAuthModal() {
-            authModal.style.display = 'none';
-        }
-
-        closeAuth.addEventListener('click', hideAuthModal);
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
-            // Простая проверка (в реальном приложении - запрос к серверу)
-            if (username === 'admin' && password === 'admin') {
-                currentUser = { username: 'admin', isAdmin: true };
-                updateAuthUI();
-                hideAuthModal();
-                alert('Добро пожаловать, Администратор!');
-            } else {
-                alert('Неверные данные для входа');
-            }
-        });
-
-        authBtn.addEventListener('click', () => {
+        document.getElementById('auth-btn').addEventListener('click', () => {
             if (currentUser) {
                 currentUser = null;
                 updateAuthUI();
             } else {
-                showAuthModal();
+                const username = prompt('Логин:');
+                const password = prompt('Пароль:');
+                
+                if (username === 'admin' && password === 'admin123') {
+                    currentUser = { username: 'admin', isAdmin: true };
+                    updateAuthUI();
+                    alert('Добро пожаловать, Администратор!');
+                } else {
+                    alert('Неверные данные');
+                }
             }
         });
 
         function updateAuthUI() {
+            const authBtn = document.getElementById('auth-btn');
+            const userInfo = document.getElementById('user-info');
+            const usernameDisplay = document.getElementById('username-display');
+
             if (currentUser) {
                 authBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
                 userInfo.style.display = 'flex';
-                usernameDisplay.textContent = `${currentUser.username}${currentUser.isAdmin ? ' (админ)' : ''}`;
-                navUpload.style.display = 'block';
-                heroUploadBtn.style.display = 'block';
+                usernameDisplay.textContent = `${currentUser.username} (админ)`;
             } else {
                 authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
                 userInfo.style.display = 'none';
-                navUpload.style.display = 'none';
-                heroUploadBtn.style.display = 'none';
             }
         }
 
-        // Управление видео
-        const playPauseBtn = document.getElementById('play-pause');
-        const muteBtn = document.getElementById('mute');
-        const progressBar = document.getElementById('progress-bar');
-        const progress = document.getElementById('progress');
-        const currentTimeEl = document.getElementById('current-time');
-        const durationEl = document.getElementById('duration');
-        const fullscreenBtn = document.getElementById('fullscreen');
-
-        playPauseBtn.addEventListener('click', () => {
-            if (mainVideo.paused) {
-                mainVideo.play();
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                mainVideo.pause();
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        });
-
-        muteBtn.addEventListener('click', () => {
-            mainVideo.muted = !mainVideo.muted;
-            muteBtn.innerHTML = mainVideo.muted ? 
-                '<i class="fas fa-volume-mute"></i>' : 
-                '<i class="fas fa-volume-up"></i>';
-        });
-
-        mainVideo.addEventListener('timeupdate', () => {
-            const percent = (mainVideo.currentTime / mainVideo.duration) * 100;
-            progress.style.width = `${percent}%`;
-            currentTimeEl.textContent = formatTime(mainVideo.currentTime);
-        });
-
-        mainVideo.addEventListener('loadedmetadata', () => {
-            durationEl.textContent = formatTime(mainVideo.duration);
-        });
-
-        progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            mainVideo.currentTime = percent * mainVideo.duration;
-        });
-
-        fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                videoPage.requestFullscreen().catch(err => {
-                    console.error(`Ошибка полноэкранного режима: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        });
-
-        function formatTime(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = Math.floor(seconds % 60);
-            
-            if (h > 0) {
-                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-            } else {
-                return `${m}:${s.toString().padStart(2, '0')}`;
-            }
-        }
-
-        // Удаление концерта со страницы просмотра
-        deleteVideoBtn.addEventListener('click', async () => {
+        // Удаление со страницы просмотра
+        document.getElementById('delete-video-btn').addEventListener('click', async () => {
             if (currentConcertId) {
                 await deleteConcert(currentConcertId);
             }
@@ -1426,9 +1046,11 @@
 
         // Инициализация
         async function init() {
-            await checkServerStatus();
             await loadConcerts();
             updateAuthUI();
+            
+            // Периодическая проверка соединения
+            setInterval(checkServerConnection, 30000);
         }
 
         // Запуск приложения
